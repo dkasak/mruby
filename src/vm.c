@@ -284,7 +284,6 @@ ecall(mrb_state *mrb, int i)
   mrb_value *self = mrb->c->stack;
   struct RObject *exc;
   int cioff;
-  mrb_value *nstk;
 
   if (i<0) return;
   p = mrb->c->ensure[i];
@@ -293,7 +292,6 @@ ecall(mrb_state *mrb, int i)
     mrb->c->ci->eidx = i;
   cioff = mrb->c->ci - mrb->c->cibase;
   ci = cipush(mrb);
-  nstk = ci->stackent;
   ci->stackent = mrb->c->stack;
   ci->mid = ci[-1].mid;
   ci->acc = CI_ACC_SKIP;
@@ -305,7 +303,6 @@ ecall(mrb_state *mrb, int i)
   exc = mrb->exc; mrb->exc = 0;
   mrb_run(mrb, p, *self);
   mrb->c->ensure[i] = NULL;
-  ci->stackent = nstk;
   mrb->c->ci = mrb->c->cibase + cioff;
   if (!mrb->exc) mrb->exc = exc;
 }
